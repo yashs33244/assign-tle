@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "assign-tle",
   "private": true,
   "scripts": {
     "build": "turbo run build",
