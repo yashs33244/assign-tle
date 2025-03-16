@@ -1,25 +1,51 @@
-import {prismaClient as db} from 'db';   
-import { CodeforcesService } from './codeforces.service';
-import { CodeChefService } from './codechef.service';
-import { LeetCodeService } from './leetcode.service';
+import { prismaClient as db } from 'db';
+import { ApiClient } from '../utils/api.utils';
+import type { ContestData } from '../utils/api.utils';
 
+interface CompeteApiContest {
+  site: string;
+  title: string;
+  startTime: number;
+  duration: number;
+  endTime: number;
+  url: string;
+}
 
 export class ContestService {
+  private static COMPETE_API_URL = 'https://competeapi.vercel.app/contests/upcoming';
+  
+  private static mapPlatformName(site: string): string {
+    // Map site names to platform names as they appear in your database
+    const platformMap: Record<string, string> = {
+      'codeforces': 'Codeforces',
+      'codechef': 'CodeChef',
+      'leetcode': 'LeetCode'
+    };
+    
+    return platformMap[site] || site.charAt(0).toUpperCase() + site.slice(1);
+  }
+  
+  static async fetchContests(): Promise<ContestData[]> {
+    try {
+      const response = await ApiClient.get<CompeteApiContest[]>(this.COMPETE_API_URL);
+      
+      return response.map(contest => ({
+        name: contest.title,
+        platform: this.mapPlatformName(contest.site),
+        startTime: new Date(contest.startTime), // API returns in milliseconds
+        duration: Math.floor(contest.duration / (60 * 1000)), // Convert from ms to minutes
+        url: contest.url
+      }));
+    } catch (error) {
+      console.error('Error fetching contests from CompeteAPI:', error);
+      return [];
+    }
+  }
+  
   static async updateContests(): Promise<number> {
     try {
-      // Fetch contests from all platforms
-    //   const [codeforcesContests, codechefContests, leetcodeContests] = await Promise.all([
-      const [codeforcesContests] = await Promise.all([
-      CodeforcesService.fetchContests(),
-        // CodeChefService.fetchContests(),
-        // LeetCodeService.fetchContests()
-      ]);
-      
-      const allContests = [
-        ...codeforcesContests,
-        // ...codechefContests,
-        // ...leetcodeContests
-      ];
+      // Fetch contests from the new API
+      const allContests = await this.fetchContests();
       
       let addedCount = 0;
       
