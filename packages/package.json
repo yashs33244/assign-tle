@@ -1,5 +1,5 @@
 {
-  "name": "db",
+  "name": "packages",
   "module": "index.ts",
   "type": "module",
   "exports":{
@@ -7,13 +7,9 @@
   },
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest",
-    "prisma": "^6.5.0"
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "@prisma/client": "6.5.0"
   }
 }

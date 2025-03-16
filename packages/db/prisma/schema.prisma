@@ -9,6 +9,38 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Contest {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  platform     String // "Codeforces", "CodeChef", "LeetCode"
+  startTime    DateTime
+  duration     Int // Duration in minutes
+  url          String
+  isBookmarked Boolean  @default(false)
+  pcd          PCD[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PCD {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  contestId     String   @db.ObjectId
+  contest       Contest  @relation(fields: [contestId], references: [id])
+  youtubeLink   String
+  isAutoFetched Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String // Hashed password
+  role      String   @default("user") // "admin" or "user"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
