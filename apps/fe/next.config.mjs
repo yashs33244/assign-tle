@@ -27,7 +27,7 @@ mergeConfig(nextConfig, userConfig)
 
 function mergeConfig(nextConfig, userConfig) {
   if (!userConfig) {
-    return
+    return nextConfig; // Return the nextConfig if no userConfig
   }
 
   for (const key in userConfig) {
@@ -43,6 +43,8 @@ function mergeConfig(nextConfig, userConfig) {
       nextConfig[key] = userConfig[key]
     }
   }
+  
+  return nextConfig; // Return the merged config
 }
 
 export default nextConfig

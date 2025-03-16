@@ -1,13 +1,11 @@
 import type { BookmarkRequest, Contest, PCDLinkRequest, PastContest } from "@/types/contest"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"
 
-export async function fetchUpcomingContests(): Promise<Contest[]> {
-  const response = await fetch(`${API_BASE_URL}/contests/upcoming`)
-  if (!response.ok) {
-    throw new Error("Failed to fetch upcoming contests")
-  }
-  return response.json()
+export async function fetchUpcomingContests() {
+  const response = await fetch('http://localhost:4000/api/contests/upcoming');
+  const data = await response.json();
+  return data.contests; // Return just the contests array
 }
 
 export async function fetchPastContests(): Promise<PastContest[]> {

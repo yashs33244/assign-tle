@@ -1,10 +1,11 @@
-"use client"
+// app/upcoming-contests.tsx
+"use client";
 
-import { useQuery } from "@tanstack/react-query"
-import { fetchUpcomingContests } from "@/lib/api"
-import { ContestGrid } from "@/components/contest-grid"
-import { useEffect } from "react"
-import { useContestStore } from "@/store/useContestStore"
+import { useQuery } from "@tanstack/react-query";
+import { fetchUpcomingContests } from "@/lib/api";
+import { ContestGrid } from "@/components/contest-grid";
+import { useEffect } from "react";
+import { useContestStore } from "@/store/useContestStore";
 
 export function UpcomingContests() {
   const {
@@ -14,14 +15,15 @@ export function UpcomingContests() {
   } = useQuery({
     queryKey: ["upcomingContests"],
     queryFn: fetchUpcomingContests,
-  })
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
-  const { selectAllPlatforms } = useContestStore()
+  const { selectAllPlatforms } = useContestStore();
 
-  // Initialize all platforms filter on first load
   useEffect(() => {
-    selectAllPlatforms()
-  }, [selectAllPlatforms])
+    selectAllPlatforms();
+  }, [selectAllPlatforms]);
 
   if (isLoading) {
     return (
@@ -30,17 +32,21 @@ export function UpcomingContests() {
           <p>Loading contests...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="text-center py-12">
-        <p className="text-destructive">Error loading contests. Please try again later.</p>
+        <p className="text-destructive">
+          Error loading contests. Please try again later.
+        </p>
       </div>
-    )
+    );
   }
 
-  return <ContestGrid contests={contests || []} />
+  // Make sure contests is always an array, even if undefined
+  return <ContestGrid contests={contests || []} />;
 }
 
+export default UpcomingContests;
