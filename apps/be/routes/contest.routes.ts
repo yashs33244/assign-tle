@@ -6,7 +6,7 @@ const router = Router();
 
 // Public routes
 router.get('/upcoming', ContestController.getUpcomingContests);
-router.get('/past', ContestController.getPastContests);
+router.get('/past/all', ContestController.getPastContests);
 
 // Protected routes - require authentication
 router.post('/bookmark', ContestController.toggleBookmark);

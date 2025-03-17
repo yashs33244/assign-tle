@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { DarkModeToggle } from "@/components/ui/dark-mode-toggle"
-import { Button } from "@/components/ui/button"
-import { Calendar, Clock, User, Settings } from "lucide-react"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { DarkModeToggle } from "@/components/ui/dark-mode-toggle";
+import { Button } from "@/components/ui/button";
+import { Calendar, Clock, User, Settings } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const navItems = [
     {
@@ -16,12 +16,6 @@ export function Navbar() {
       href: "/",
       icon: <Calendar className="h-4 w-4 mr-2" />,
       active: pathname === "/",
-    },
-    {
-      label: "Past",
-      href: "/past",
-      icon: <Clock className="h-4 w-4 mr-2" />,
-      active: pathname === "/past",
     },
     {
       label: "Profile",
@@ -35,7 +29,7 @@ export function Navbar() {
       icon: <Settings className="h-4 w-4 mr-2" />,
       active: pathname === "/admin",
     },
-  ]
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -50,7 +44,10 @@ export function Navbar() {
             <Link key={item.href} href={item.href}>
               <Button
                 variant={item.active ? "default" : "ghost"}
-                className={cn("text-sm", item.active ? "bg-primary text-primary-foreground" : "")}
+                className={cn(
+                  "text-sm",
+                  item.active ? "bg-primary text-primary-foreground" : ""
+                )}
               >
                 {item.icon}
                 <span className="hidden sm:inline">{item.label}</span>
@@ -63,6 +60,5 @@ export function Navbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }
-

@@ -129,7 +129,7 @@ export class ContestService {
           startTime: 'desc'
         },
         include: {
-          pcd: true
+          pcd: true // Include related PCD records
         }
       });
     } catch (error) {
@@ -158,12 +158,19 @@ export class ContestService {
     }
   }
   
-  static async getBookmarkedContests() {
+  static async getBookmarkedContests(platformFilter?: string[]) {
     try {
+      const whereClause = {
+        isBookmarked: true,
+        ...(platformFilter && platformFilter.length > 0 ? {
+          platform: {
+            in: platformFilter
+          }
+        } : {})
+      };
+      
       return await db.contest.findMany({
-        where: {
-          isBookmarked: true
-        },
+        where: whereClause,
         orderBy: {
           startTime: 'asc'
         }

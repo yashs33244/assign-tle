@@ -10,37 +10,95 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/bookmark-button";
-import { ExternalLink, Clock, Calendar } from "lucide-react";
-import { formatDistanceToNow, format, isPast, addMinutes } from "date-fns";
+import { ExternalLink, Clock, Calendar, Timer } from "lucide-react";
+import {
+  formatDistanceToNow,
+  format,
+  isPast,
+  addMinutes,
+  differenceInSeconds,
+  differenceInMinutes,
+  differenceInHours,
+  differenceInDays,
+} from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 interface ContestCardProps {
   contest: Contest | PastContest;
   isPastContest?: boolean;
+  pcdLink?: string;
 }
 
 export function ContestCard({
   contest,
   isPastContest = false,
+  pcdLink,
 }: ContestCardProps) {
-  // Use client-side rendering only to avoid hydration mismatch
   const [isClient, setIsClient] = useState(false);
+  const [remainingTime, setRemainingTime] = useState<string>("Loading...");
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Handle date calculations only on client side
   const startTime = new Date(contest.startTime);
   const endTime =
     "endTime" in contest && contest.endTime
       ? new Date(contest.endTime)
       : addMinutes(startTime, contest.duration || 0);
 
-  // These state checks will only run on the client
   const isEnded = isClient ? isPast(endTime) : false;
   const isLive = isClient ? isPast(startTime) && !isEnded : false;
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    const updateRemainingTime = () => {
+      if (isLive) {
+        const diffSeconds = differenceInSeconds(endTime, new Date());
+        if (diffSeconds <= 0) {
+          setRemainingTime("Ended");
+          return;
+        }
+
+        const days = Math.floor(diffSeconds / (24 * 60 * 60));
+        const hours = Math.floor((diffSeconds % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((diffSeconds % (60 * 60)) / 60);
+        const seconds = Math.floor(diffSeconds % 60);
+
+        if (days > 0) {
+          setRemainingTime(`${days}d ${hours}h ${minutes}m remaining`);
+        } else if (hours > 0) {
+          setRemainingTime(`${hours}h ${minutes}m ${seconds}s remaining`);
+        } else if (minutes > 0) {
+          setRemainingTime(`${minutes}m ${seconds}s remaining`);
+        } else {
+          setRemainingTime(`${seconds}s remaining`);
+        }
+      } else if (!isPast(startTime)) {
+        const diffSeconds = differenceInSeconds(startTime, new Date());
+        const days = Math.floor(diffSeconds / (24 * 60 * 60));
+        const hours = Math.floor((diffSeconds % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((diffSeconds % (60 * 60)) / 60);
+
+        if (days > 0) {
+          setRemainingTime(`Starts in ${days}d ${hours}h ${minutes}m`);
+        } else if (hours > 0) {
+          setRemainingTime(`Starts in ${hours}h ${minutes}m`);
+        } else if (minutes > 0) {
+          setRemainingTime(`Starts in ${minutes}m`);
+        } else {
+          setRemainingTime(`Starts in less than a minute`);
+        }
+      }
+    };
+
+    updateRemainingTime();
+    const intervalId = setInterval(updateRemainingTime, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [isClient, isLive, isPastContest, startTime, endTime]);
 
   const getPlatformColor = (platform: string) => {
     const colors: Record<string, string> = {
@@ -75,39 +133,44 @@ export function ContestCard({
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span>{isClient ? format(startTime, "PPP") : "Loading..."}</span>
+            <span>{format(startTime, "PPP")}</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            <span>
-              {isClient
-                ? `${format(startTime, "p")} - ${format(endTime, "p")}`
-                : "Loading..."}
-            </span>
+            <span>{`${format(startTime, "p")} - ${format(endTime, "p")}`}</span>
           </div>
           <div className="mt-3">
-            {isClient &&
-              (isLive ? (
+            {isLive ? (
+              <div className="flex flex-col gap-1">
                 <Badge variant="destructive" className="mt-2">
                   LIVE NOW
                 </Badge>
-              ) : isEnded ? (
-                <Badge variant="outline" className="mt-2">
-                  Ended
-                </Badge>
-              ) : (
+                <div className="flex items-center gap-2 mt-1 text-sm font-medium text-red-600 dark:text-red-400">
+                  <Timer className="h-4 w-4" />
+                  <span>{remainingTime}</span>
+                </div>
+              </div>
+            ) : isEnded ? (
+              <Badge variant="outline" className="mt-2">
+                Ended
+              </Badge>
+            ) : (
+              <div className="flex flex-col gap-1">
                 <Badge variant="secondary" className="mt-2">
-                  Starts {formatDistanceToNow(startTime, { addSuffix: true })}
+                  Upcoming
                 </Badge>
-              ))}
+                <div className="flex items-center gap-2 mt-1 text-sm font-medium text-blue-600 dark:text-blue-400">
+                  <Timer className="h-4 w-4" />
+                  <span>{remainingTime}</span>
+                </div>
+              </div>
+            )}
           </div>
-          {isClient &&
-            isPastContest &&
-            "pcdLink" in contest &&
-            contest.pcdLink && (
+          {isPastContest &&
+            (pcdLink || ("pcdLink" in contest && contest.pcdLink)) && (
               <div className="mt-4">
                 <Link
-                  href={contest.pcdLink}
+                  href={pcdLink || (contest as PastContest).pcdLink || ""}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
