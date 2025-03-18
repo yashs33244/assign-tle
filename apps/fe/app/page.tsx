@@ -9,15 +9,6 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 container py-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight">
-            Upcoming Contests
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Browse and bookmark upcoming programming contests
-          </p>
-        </div>
-
         <FilterBar />
 
         <div className="mt-6">
