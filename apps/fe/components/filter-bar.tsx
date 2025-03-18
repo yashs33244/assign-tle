@@ -1,9 +1,10 @@
-"use client"
+// components/FilterBar.tsx
+"use client";
 
-import type { Platform } from "@/types/contest"
-import { useContestStore } from "@/store/useContestStore"
-import { Button } from "@/components/ui/button"
-import { Filter } from "lucide-react"
+import { ALL_PLATFORMS } from "@/types/contest";
+import { useContestStore } from "@/store/useContestStore";
+import { Button } from "@/components/ui/button";
+import { Filter } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -11,18 +12,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export function FilterBar() {
-  const { selectedPlatforms, togglePlatformFilter, selectAllPlatforms, clearPlatformFilters } = useContestStore()
-
-  const platforms: Platform[] = ["Codeforces", "LeetCode", "HackerRank", "CodeChef", "AtCoder", "TopCoder", "Other"]
+  const {
+    selectedPlatforms,
+    togglePlatformFilter,
+    selectAllPlatforms,
+    clearPlatformFilters,
+  } = useContestStore();
 
   return (
     <div className="flex items-center space-x-2 mb-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
             <Filter className="h-4 w-4" />
             <span>Filter Platforms</span>
             {selectedPlatforms.length > 0 && (
@@ -35,7 +43,7 @@ export function FilterBar() {
         <DropdownMenuContent align="start" className="w-56">
           <DropdownMenuLabel>Platforms</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {platforms.map((platform) => (
+          {ALL_PLATFORMS.map((platform) => (
             <DropdownMenuCheckboxItem
               key={platform}
               checked={selectedPlatforms.includes(platform)}
@@ -46,16 +54,25 @@ export function FilterBar() {
           ))}
           <DropdownMenuSeparator />
           <div className="flex justify-between p-2">
-            <Button variant="outline" size="sm" onClick={selectAllPlatforms} className="text-xs">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={selectAllPlatforms}
+              className="text-xs"
+            >
               Select All
             </Button>
-            <Button variant="outline" size="sm" onClick={clearPlatformFilters} className="text-xs">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearPlatformFilters}
+              className="text-xs"
+            >
               Clear All
             </Button>
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
+  );
 }
-

@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 // Use dynamic import with SSR disabled in this client component
 const UpcomingContests = dynamic(
-  () => import("@/app/upcoming-contests").then((mod) => mod.UpcomingContests),
+  () => import("@/app/upcoming-contests").then((mod) => mod.default),
   { ssr: false }
 );
 

@@ -1,4 +1,4 @@
-export type Platform = "Codeforces" | "LeetCode" | "HackerRank" | "CodeChef" | "AtCoder" | "TopCoder" | "Other"
+
 
 export interface Contest {
   id: string
@@ -25,3 +25,30 @@ export interface PCDLinkRequest {
   pcdLink: string
 }
 
+
+export const ALL_PLATFORMS = [
+  "Codeforces",
+  "LeetCode",
+  "HackerRank",
+  "CodeChef", 
+  "AtCoder",
+  "TopCoder",
+  "Other",
+] as const;
+
+export type Platform = typeof ALL_PLATFORMS[number];
+
+export interface Contest {
+  id: string;
+  name: string;
+  platform: Platform;
+  startTime: string;
+  endTime: string;
+  url: string;
+  isBookmarked?: boolean;
+}
+
+export interface BookmarkRequest {
+  contestId: string;
+  bookmarked: boolean;
+}

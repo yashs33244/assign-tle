@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { BookmarkRequest, Platform, Contest } from "@/types/contest";
+import { ALL_PLATFORMS, Platform, BookmarkRequest, Contest } from "@/types/contest";
 import { bookmarkContest, fetchBookmarkedContests } from "@/lib/api";
 
 interface ContestState {
@@ -11,7 +11,7 @@ interface ContestState {
   selectAllPlatforms: () => void;
   clearPlatformFilters: () => void;
   isBookmarked: (contestId: string) => boolean;
-  syncBookmarks: (contests: { id: string; isBookmarked: boolean }[]) => void;
+  syncBookmarks: (contests: { id: string; isBookmarked?: boolean }[]) => void;
   refetchBookmarks: () => Promise<void>;
 }
 
@@ -58,16 +58,7 @@ export const useContestStore = create<ContestState>()(
         });
       },
       selectAllPlatforms: () => {
-        const allPlatforms: Platform[] = [
-          "Codeforces",
-          "LeetCode",
-          "HackerRank",
-          "CodeChef",
-          "AtCoder",
-          "TopCoder",
-          "Other",
-        ];
-        set({ selectedPlatforms: allPlatforms });
+        set({ selectedPlatforms: [...ALL_PLATFORMS] });
       },
       clearPlatformFilters: () => {
         set({ selectedPlatforms: [] });
@@ -75,7 +66,7 @@ export const useContestStore = create<ContestState>()(
       isBookmarked: (contestId: string) => {
         return get().bookmarkedContests.includes(contestId);
       },
-      syncBookmarks: (contests: { id: string; isBookmarked: boolean }[]) => {
+      syncBookmarks: (contests: { id: string; isBookmarked?: boolean }[]) => {
         const newBookmarkedContests = contests
           .filter((contest) => contest.isBookmarked)
           .map((contest) => contest.id);
