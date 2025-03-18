@@ -157,27 +157,25 @@ export class ContestService {
       throw error;
     }
   }
-  
-  static async getBookmarkedContests(platformFilter?: string[]) {
+  static async getBookmarkedContests() {
     try {
       const whereClause = {
-        isBookmarked: true,
-        ...(platformFilter && platformFilter.length > 0 ? {
-          platform: {
-            in: platformFilter
-          }
-        } : {})
+        isBookmarked: true
       };
-      
-      return await db.contest.findMany({
+  
+      const res = await db.contest.findMany({
         where: whereClause,
         orderBy: {
           startTime: 'asc'
         }
+        // No `select` means all columns will be returned
       });
+  
+      return res;
     } catch (error) {
       console.error('Error getting bookmarked contests:', error);
       throw error;
     }
   }
+  
 }

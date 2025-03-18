@@ -1,8 +1,9 @@
+"use client";
 import { Contest, PastContest } from "@/types/contest";
-import { ContestCard } from "@/components/contest-card";
+import { ContestCard } from "./contest-card";
 
 interface ContestGridProps {
-  contests: Contest[] | PastContest[];
+  contests: (Contest | PastContest)[];
   pcdLinks?: Record<string, string>;
   isPastContests?: boolean;
 }
@@ -18,21 +19,24 @@ export function ContestGrid({
         <h3 className="text-lg font-medium">No contests found</h3>
         <p className="text-muted-foreground mt-1">
           {isPastContests
-            ? "You haven't bookmarked any past contests."
-            : "You haven't bookmarked any upcoming contests."}
+            ? "No past contests available at the moment."
+            : "Try adjusting your filters or check back later for more contests."}
         </p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {contests.map((contest) => (
         <ContestCard
           key={contest.id}
           contest={contest}
           pcdLink={pcdLinks[contest.id]}
           isPastContest={isPastContests}
+          initialBookmarked={
+            "isBookmarked" in contest ? contest.isBookmarked : undefined
+          }
         />
       ))}
     </div>

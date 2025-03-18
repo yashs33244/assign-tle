@@ -16,6 +16,7 @@ const pcdValidator = [
 
 // Public routes
 router.get('/contest/:contestId', PCDController.getPCDForContest);
+router.get('/contests', PCDController.getPCDForAll);
 
 // Admin routes
 router.post('/', pcdValidator, PCDController.addPCDManually);

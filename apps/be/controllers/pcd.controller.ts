@@ -32,6 +32,29 @@ export class PCDController {
       });
     }
   }
+  static async getPCDForAll(req: Request, res: any) {
+    try {
+  
+      
+      const pcds = await PCDService.findPCDForAll();
+      
+      res.status(200).json({
+        message: 'PCDs retrieved successfully',
+        pcds
+      });
+    } catch (error: any) {
+      if (error.message === 'Contest not found') {
+        return res.status(404).json({
+          message: error.message
+        });
+      }
+      
+      res.status(500).json({
+        message: 'Failed to retrieve PCDs',
+        error: error.message
+      });
+    }
+  }
   
   static async addPCDManually(req: Request, res: any) {
     try {

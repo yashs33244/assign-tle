@@ -111,13 +111,10 @@ export class ContestController {
   
   static async getBookmarkedContests(req: Request, res: Response) {
     try {
-      // Handle platform filter from query params
-      let platformFilter: string[] | undefined;
-      if (req.query.platform) {
-        platformFilter = (req.query.platform as string).split(',');
-      }
       
-      const contests = await ContestService.getBookmarkedContests(platformFilter);
+
+      
+      const contests = await ContestService.getBookmarkedContests();
       
       res.status(200).json({
         message: 'Bookmarked contests retrieved successfully',

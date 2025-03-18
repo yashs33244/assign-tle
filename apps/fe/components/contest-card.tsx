@@ -11,16 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/bookmark-button";
 import { ExternalLink, Clock, Calendar, Timer } from "lucide-react";
-import {
-  formatDistanceToNow,
-  format,
-  isPast,
-  addMinutes,
-  differenceInSeconds,
-  differenceInMinutes,
-  differenceInHours,
-  differenceInDays,
-} from "date-fns";
+import { format, isPast, addMinutes, differenceInSeconds } from "date-fns";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -28,12 +19,14 @@ interface ContestCardProps {
   contest: Contest | PastContest;
   isPastContest?: boolean;
   pcdLink?: string;
+  initialBookmarked?: boolean;
 }
 
 export function ContestCard({
   contest,
   isPastContest = false,
   pcdLink,
+  initialBookmarked,
 }: ContestCardProps) {
   const [isClient, setIsClient] = useState(false);
   const [remainingTime, setRemainingTime] = useState<string>("Loading...");
@@ -123,7 +116,12 @@ export function ContestCard({
           <Badge className={`${getPlatformColor(contest.platform)}`}>
             {contest.platform}
           </Badge>
-          {isClient && <BookmarkButton contestId={contest.id} />}
+          {isClient && (
+            <BookmarkButton
+              contestId={contest.id}
+              initialBookmarked={initialBookmarked}
+            />
+          )}
         </div>
         <CardTitle className="text-lg mt-2 line-clamp-2">
           {contest.name}

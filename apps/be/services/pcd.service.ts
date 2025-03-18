@@ -47,6 +47,41 @@ export class PCDService {
       throw error;
     }
   }
+  static async findPCDForAll() {
+    try {
+ 
+      // Check if we already have PCDs for this contest
+      const existingPCDs = await db.pCD.findMany();
+      
+      if (existingPCDs.length > 0) {
+        return existingPCDs;
+      }
+      
+      // Otherwise search YouTube for PCDs
+    //   const videos = await YouTubeService.searchPCDVideos(contest.name);
+      
+    //   // Store found videos as PCDs
+    //   const pcds = [];
+      
+    //   for (const video of videos) {
+    //     if (video.url) {
+    //       const pcd = await db.pCD.create({
+    //         data: {
+    //           contestId: contest.id,
+    //           youtubeLink: video.url,
+    //           isAutoFetched: true
+    //         }
+    //       });
+    //       pcds.push(pcd);
+    //     }
+    //   }
+      
+    //   return pcds;
+    } catch (error) {
+      console.error('Error finding PCD for contest:', error);
+      throw error;
+    }
+  }
   
   static async addPCDManually(contestId: string, youtubeLink: string) {
     try {
