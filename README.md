@@ -1,3 +1,12 @@
+# Check Out the Demo
+[Click here to see the demo video](https://drive.google.com/file/d/1IJVodF9vmSaXv4mgHdf6R9J9xySc-tNZ/view?usp=sharing)
+# Live Demo
+[Click here to see the website live demo](https://tle.yashprojects.online/)
+
+# Backend Readme 
+
+For more details about the backend, refer to the [Backend README](apps/be/README.md).
+
 # Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
